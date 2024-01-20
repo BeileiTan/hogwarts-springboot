@@ -1,6 +1,8 @@
 package com.springdemo.hogwartsartifactsonline.wizard;
 
-import com.springdemo.hogwartsartifactsonline.artifact.utils.IdWorker;
+import com.springdemo.hogwartsartifactsonline.artifact.Artifact;
+import com.springdemo.hogwartsartifactsonline.artifact.ArtifactRepository;
+import com.springdemo.hogwartsartifactsonline.artifact.ArtifactService;
 import com.springdemo.hogwartsartifactsonline.system.exception.ObjectNotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,8 +30,7 @@ class WizardServiceTest {
     WizardRepository wizardRepository;
 
     @Mock
-    IdWorker idWorker;
-
+    ArtifactRepository artifactRepository;
 
     @InjectMocks
     WizardService wizardService;
@@ -201,5 +202,83 @@ class WizardServiceTest {
 
         //then
         verify(wizardRepository, times( 1)).findById(2);
+    }
+
+    //change the ownership
+    @Test
+    void testAssignArtifactSuccess(){
+        //given
+        Artifact artifact = new Artifact();
+        artifact.setId("1250808601744904192");
+        artifact.setName("Invisibility Cloak");
+        artifact.setDescription("An invisibility cloak is used to make the wearer invisible.");
+        artifact.setImageUrl("ImageUrl");
+
+        Wizard wizard1 = new Wizard();
+        wizard1.setId(2);
+        wizard1.setName("Harry Potter");
+        wizard1.addArtifact(artifact);
+
+        Wizard wizard2 = new Wizard();
+        wizard2.setId(3);
+        wizard2.setName("Nevile Longbottom");
+
+        //first find if the artifact exists
+        given(artifactRepository.findById("1250808601744904192")).willReturn(Optional.of(artifact));
+        //then find if the wizard exists
+        given(wizardRepository.findById(3)).willReturn(Optional.of(wizard2));
+
+        //when
+        this.wizardService.assignArtifact(3, "1250808601744904192");
+
+        //then
+        assertThat(artifact.getOwner().getId()).isEqualTo(3);
+    }
+
+    @Test
+    void testAssignWizardNotFound(){
+        //given
+        Artifact artifact = new Artifact();
+        artifact.setId("1250808601744904192");
+        artifact.setName("Invisibility Cloak");
+        artifact.setDescription("An invisibility cloak is used to make the wearer invisible.");
+        artifact.setImageUrl("ImageUrl");
+
+        Wizard wizard1 = new Wizard();
+        wizard1.setId(2);
+        wizard1.setName("Harry Potter");
+        wizard1.addArtifact(artifact);
+
+        //first find if the artifact exists
+        given(artifactRepository.findById("1250808601744904192")).willReturn(Optional.of(artifact));
+        //then find if the wizard exists
+        given(wizardRepository.findById(3)).willReturn(Optional.empty());
+
+        //when
+        Throwable thrown = assertThrows(ObjectNotFoundException.class, () -> {
+           this.wizardService.assignArtifact(3, "1250808601744904192");
+        });
+
+        //then
+        assertThat(thrown)
+                .isInstanceOf(ObjectNotFoundException.class)
+                .hasMessage("Could not find the wizard with id 3 :(");
+        assertThat(artifact.getOwner().getId()).isEqualTo(2);
+    }
+
+    @Test
+    void testAssignArtifactNotFound(){
+        //first find if the artifact exists
+        given(artifactRepository.findById("1250808601744904192")).willReturn(Optional.empty());
+
+        //when
+        Throwable thrown = assertThrows(ObjectNotFoundException.class, () -> {
+            this.wizardService.assignArtifact(3, "1250808601744904192");
+        });
+
+        //then
+        assertThat(thrown)
+                .isInstanceOf(ObjectNotFoundException.class)
+                .hasMessage("Could not find the artifact with id 1250808601744904192 :(");
     }
 }
