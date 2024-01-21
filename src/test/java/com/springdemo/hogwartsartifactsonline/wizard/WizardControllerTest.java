@@ -46,6 +46,7 @@ class WizardControllerTest {
     @BeforeEach
     void setUp() {
         this.wizards = new ArrayList<>();
+
         Wizard w1 = new Wizard();
         w1.setId(1);
         w1.setName("Albus Dumbledore");
@@ -98,13 +99,13 @@ class WizardControllerTest {
 
     @Test
     void findWizardByIdNotFound() throws Exception {
-        given(wizardService.findById(1)).willThrow(new ObjectNotFoundException("wizard",1));
+        given(wizardService.findById(10)).willThrow(new ObjectNotFoundException("wizard",10));
 
         //When AND Then
-        this.mockMvc.perform(get(this.baseUrl+ "/wizards/1").accept(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(get(this.baseUrl+ "/wizards/10").accept(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.flag").value(false))
                 .andExpect(jsonPath("$.code").value(StatusCode.NOT_FOUND))
-                .andExpect(jsonPath("$.message").value("Could not find the wizard with id 1 :("))
+                .andExpect(jsonPath("$.message").value("Could not find the wizard with id 10 :("))
                 .andExpect(jsonPath("$.data").isEmpty());
 
     }
@@ -125,7 +126,7 @@ class WizardControllerTest {
     }
 
     @Test
-    void testAddArtifactSuccess() throws Exception {
+    void testAddWizardSuccess() throws Exception {
         Wizard wizard = new Wizard(null, "Ron Weasley", null);
         String json = this.objectMapper.writeValueAsString(wizard);
 
