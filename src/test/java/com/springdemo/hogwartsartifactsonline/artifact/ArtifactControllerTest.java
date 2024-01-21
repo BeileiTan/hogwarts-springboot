@@ -234,7 +234,7 @@ class ArtifactControllerTest {
     @Test
     void testDeleteArtifactErrorWithNonExisitedId() throws Exception {
         //given
-        doThrow(new  ObjectNotFoundException("artifact", "1250808601744904191")).when(this.artifactService).delete("1250808601744904191");
+        doThrow(new ObjectNotFoundException("artifact", "1250808601744904191")).when(this.artifactService).delete("1250808601744904191");
 
         //When AND Then
         this.mockMvc.perform(delete(this.baseUrl+ "/artifacts/1250808601744904191").accept(MediaType.APPLICATION_JSON))
