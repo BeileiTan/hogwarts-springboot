@@ -141,6 +141,7 @@ public class UserControllerIntegrationTest {
 
     @Test
     @DisplayName("Check updateUser with valid input (PUT)")
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void testUpdateUserSuccess() throws Exception {
         User hogwartsUser = new User();
         hogwartsUser.setUsername("tom123"); // Username is changed. It was tom.
@@ -161,6 +162,7 @@ public class UserControllerIntegrationTest {
 
     @Test
     @DisplayName("Check updateUser with non-existent id (PUT)")
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void testUpdateUserErrorWithNonExistentId() throws Exception {
         User hogwartsUser = new User();
         hogwartsUser.setId(5); // This id does not exist in the database.
@@ -179,6 +181,7 @@ public class UserControllerIntegrationTest {
 
     @Test
     @DisplayName("Check updateUser with invalid input (PUT)")
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void testUpdateUserErrorWithInvalidInput() throws Exception {
         User hogwartsUser = new User();
         hogwartsUser.setId(1); // Valid id
@@ -203,6 +206,7 @@ public class UserControllerIntegrationTest {
 
     @Test
     @DisplayName("Check deleteUser with valid input (DELETE)")
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void testDeleteUserSuccess() throws Exception {
         this.mockMvc.perform(delete(this.baseUrl + "/users/2").accept(MediaType.APPLICATION_JSON).header(HttpHeaders.AUTHORIZATION, this.token))
                 .andExpect(jsonPath("$.flag").value(true))
@@ -219,6 +223,7 @@ public class UserControllerIntegrationTest {
 
     @Test
     @DisplayName("Check deleteUser with non-existent id (DELETE)")
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void testDeleteUserErrorWithNonExistentId() throws Exception {
         this.mockMvc.perform(delete(this.baseUrl + "/users/5").accept(MediaType.APPLICATION_JSON).header(HttpHeaders.AUTHORIZATION, this.token))
                 .andExpect(jsonPath("$.flag").value(false))
@@ -229,6 +234,7 @@ public class UserControllerIntegrationTest {
 
     @Test
     @DisplayName("Check deleteUser with insufficient permission (DELETE)")
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void testDeleteUserNoAccessAsRoleUser() throws Exception {
         ResultActions resultActions = this.mockMvc.perform(post(this.baseUrl + "/users/login").with(httpBasic("eric", "ABCDEfghi123456*()"))); // httpBasic() is from spring-security-test.
         MvcResult mvcResult = resultActions.andDo(print()).andReturn();
