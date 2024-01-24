@@ -41,7 +41,7 @@ public class UserController {
         List<UserDto> foundUsersDto = foundUsers.stream().
                 map(foundUser -> this.userToUserDtoConverter.convert(foundUser))
                 .collect(Collectors.toList());
-        return new Result(true, StatusCode.SUCCESS, "Find Success", foundUsersDto);
+        return new Result(true, StatusCode.SUCCESS, "Find All Success", foundUsersDto);
     }
 
     @PostMapping

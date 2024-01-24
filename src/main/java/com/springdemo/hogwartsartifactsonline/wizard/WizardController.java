@@ -26,7 +26,7 @@ public class WizardController {
     @GetMapping
     public Result findAllWizards(){
         List<Wizard> foundWizards = this.wizardService.findAll();
-        return new Result(true, StatusCode.SUCCESS, "Find Success", foundWizards);
+        return new Result(true, StatusCode.SUCCESS, "Find All Success", foundWizards);
     }
 
     @PostMapping
