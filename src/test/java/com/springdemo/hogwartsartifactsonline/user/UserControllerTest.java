@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 class UserControllerTest {
 
     @Autowired
@@ -120,7 +120,7 @@ class UserControllerTest {
         this.mockMvc.perform(get(this.baseUrl+ "/users").accept(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.flag").value(true))
                 .andExpect(jsonPath("$.code").value(StatusCode.SUCCESS))
-                .andExpect(jsonPath("$.message").value("Find Success"))
+                .andExpect(jsonPath("$.message").value("Find All Success"))
                 .andExpect(jsonPath("$.data[0].id").value("1"))
                 .andExpect(jsonPath("$.data[0].username").value("john"))
                 .andExpect(jsonPath("$.data[0].roles").value("admin user"))

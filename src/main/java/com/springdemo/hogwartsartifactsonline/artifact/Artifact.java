@@ -14,11 +14,11 @@ import java.io.Serializable;
 public class Artifact implements Serializable {
     @Id
     private String id;
-    @NotBlank(message = "Name is required")
+    @NotBlank(message = "name is required")
     private String name;
-    @NotBlank(message = "Description is required")
+    @NotBlank(message = "description is required")
     private String description;
-    @NotBlank(message = "ImageUrl is required")
+    @NotBlank(message = "imageUrl is required")
     private String imageUrl;
 
     //one-to-many: one wizard can have many artifact

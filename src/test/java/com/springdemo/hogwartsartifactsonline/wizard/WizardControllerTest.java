@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 class WizardControllerTest {
 
     @Autowired
@@ -118,7 +118,7 @@ class WizardControllerTest {
         this.mockMvc.perform(get(this.baseUrl+ "/wizards").accept(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.flag").value(true))
                 .andExpect(jsonPath("$.code").value(StatusCode.SUCCESS))
-                .andExpect(jsonPath("$.message").value("Find Success"))
+                .andExpect(jsonPath("$.message").value("Find All Success"))
                 .andExpect(jsonPath("$.data[0].id").value("1"))
                 .andExpect(jsonPath("$.data[0].name").value("Albus Dumbledore"))
                 .andExpect(jsonPath("$.data[1].id").value("2"))

@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,9 @@ class UserServiceTest {
 
     @Mock
     UserRepository userRepository;
+
+    @Mock
+    PasswordEncoder passwordEncoder;
 
     @InjectMocks
     UserService userService;
@@ -128,6 +132,7 @@ class UserServiceTest {
         given(userRepository.save(u4)).willReturn(u4);
 
         //when
+        given(this.passwordEncoder.encode(u4.getPassword())).willReturn("Encoded Password");
 
         User savedUser = userService.save(u4);
 
