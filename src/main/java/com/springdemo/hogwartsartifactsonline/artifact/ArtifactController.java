@@ -2,7 +2,6 @@ package com.springdemo.hogwartsartifactsonline.artifact;
 
 import com.springdemo.hogwartsartifactsonline.system.Result;
 import com.springdemo.hogwartsartifactsonline.system.StatusCode;
-import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,17 +13,13 @@ public class ArtifactController {
     //injection from service to controller
     private final ArtifactService artifactService;
 
-    private final MeterRegistry meterRegistry;
-
-    public ArtifactController(ArtifactService artifactService, MeterRegistry meterRegistry) {
+    public ArtifactController(ArtifactService artifactService) {
         this.artifactService = artifactService;
-        this.meterRegistry = meterRegistry;
     }
 
     @GetMapping("/{artifactId}")
     public Result findArtifactById(@PathVariable String artifactId){
         Artifact foundArtifact = this.artifactService.findById(artifactId);
-        meterRegistry.counter("artifact.id." + artifactId).increment();
         return new Result(true, StatusCode.SUCCESS, "Find One Success", foundArtifact);
     }
 
