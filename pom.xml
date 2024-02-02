@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.1</version>
+        <version>3.2.2</version> <!-- upgrade from 3.2.1 -->
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.springdemo</groupId>
@@ -94,6 +94,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
+        <!-- <dependency>   The dependency is only used for upgrading, do not put in production
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-properties-migrator</artifactId>
+            <scope>runtime</scope>
+        </dependency>  -->
     </dependencies>
 
 
