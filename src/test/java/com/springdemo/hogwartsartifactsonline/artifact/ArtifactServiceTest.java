@@ -1,6 +1,13 @@
 package com.springdemo.hogwartsartifactsonline.artifact;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springdemo.hogwartsartifactsonline.artifact.utils.IdWorker;
+import com.springdemo.hogwartsartifactsonline.client.ai.chat.ChatClient;
+import com.springdemo.hogwartsartifactsonline.client.ai.chat.dto.ChatRequest;
+import com.springdemo.hogwartsartifactsonline.client.ai.chat.dto.ChatResponse;
+import com.springdemo.hogwartsartifactsonline.client.ai.chat.dto.Choice;
+import com.springdemo.hogwartsartifactsonline.client.ai.chat.dto.Message;
 import com.springdemo.hogwartsartifactsonline.system.exception.ObjectNotFoundException;
 import com.springdemo.hogwartsartifactsonline.wizard.Wizard;
 import org.junit.jupiter.api.AfterEach;
@@ -33,6 +40,9 @@ class ArtifactServiceTest {
 
     @Mock
     IdWorker idWorker;
+
+    @Mock
+    ChatClient chatClient;
 
     @InjectMocks
     ArtifactService artifactService;
@@ -221,4 +231,38 @@ class ArtifactServiceTest {
         //then
         verify(artifactRepository, times( 1)).findById("1250808601744904192");
     }
+
+    @Test
+    void testSummarizeSuccess() throws JsonProcessingException {
+        //Given
+        Wizard wizard = new Wizard(1, "Albus Dombledore", 2);
+        List<Artifact> artifactList = List.of(
+                new Artifact("1250808601744904191", "Delauniator","A Deluminator is a device invented by Albus", "ImageUrl", wizard),
+                new Artifact("1250808601744904193", "Time Turner", "A Time Turner is a magical time-travel device.","ImageUrl", wizard)
+        );
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonArray = objectMapper.writeValueAsString(artifactList);
+
+        List<Message> messages = List.of(
+                new Message("system", "Your task is to generate a short summary of a given JSON array in at most 100 words. The summary must include the number of artifacts, each artifact's description, and the ownership information. Don't mention that the summary is from a given JSON array."),
+                new Message("user", jsonArray)
+        );
+
+        ChatRequest chatRequest = new ChatRequest("gpt-3.5-turbo", messages);
+
+        ChatResponse chatResponse = new ChatResponse(List.of(
+                new Choice(0, new Message("assistant", "A summary of two artifacts owned by Albus Dumbledore."))));
+
+
+        given(this.chatClient.generate(chatRequest)).willReturn(chatResponse);
+
+        //when
+        String summary = this.artifactService.summarize(artifactList);
+
+        //then
+        assertThat(summary).isEqualTo("A summary of two artifacts owned by Albus Dumbledore.");
+        verify(this.chatClient, times(1)).generate(chatRequest);
+    }
 }
+
