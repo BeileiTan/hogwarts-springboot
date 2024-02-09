@@ -1,5 +1,6 @@
 package com.springdemo.hogwartsartifactsonline.artifact;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.springdemo.hogwartsartifactsonline.system.Result;
 import com.springdemo.hogwartsartifactsonline.system.StatusCode;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -50,5 +51,12 @@ public class ArtifactController {
     public Result deleteArtifact(@PathVariable String artifactId){
         this.artifactService.delete(artifactId);
         return new Result(true, StatusCode.SUCCESS, "Delete Success");
+    }
+
+    @GetMapping("/summary")
+    public Result summarizeArtifacts() throws JsonProcessingException {
+        List<Artifact> foundArtifacts = this.artifactService.findAll();
+        String artifactSummary = this.artifactService.summarize(foundArtifacts);
+        return new Result(true, StatusCode.SUCCESS, "Summarize Success", artifactSummary);
     }
 }
